@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Directorio 360 — Ahuacatlán, Nayarit</title>
+  <meta name="description" content="Recorrido virtual interactivo 360° por Ahuacatlán, Nayarit. Explora el Crucero Principal, Agroquímicos Bendita Cosecha y el Volcán Ceboruco.">
+  <meta name="robots" content="index, follow">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Directorio 360 — Ahuacatlán">
+  <meta property="og:description" content="Recorrido virtual interactivo 360° por Ahuacatlán, Nayarit.">
+  <meta property="og:type" content="website">
+
+  <!-- Pannellum -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- App Styles -->
+  <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+  <!-- ════ Loading Screen ════ -->
+  <div id="loader">
+    <div class="loader-content">
+      <div class="loader-spinner"></div>
+      <h2 class="loader-title">Directorio 360°</h2>
+      <p class="loader-subtitle">Cargando recorrido virtual…</p>
+    </div>
+  </div>
+
+  <!-- ════ Main Application ════ -->
+  <div id="app">
+
+    <!-- Pannellum Panorama Viewer -->
+    <div id="panorama"></div>
+
+    <!-- Sidebar Panel -->
+    <aside id="sidebar" aria-label="Panel de escenas">
+      <div class="sidebar-header">
+        <div class="sidebar-brand">
+          <span class="sidebar-logo" aria-hidden="true">360°</span>
+          <div>
+            <h1 class="sidebar-title">Recorridos 360</h1>
+          </div>
+        </div>
+      </div>
+      <div class="sidebar-divider"></div>
+      <p class="sidebar-section-label">Escenas</p>
+      <div id="scene-list" role="list"></div>
+    </aside>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" aria-label="Abrir o cerrar panel de escenas" title="Menú">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+        <rect y="3"  width="20" height="2" rx="1" fill="currentColor"/>
+        <rect y="9"  width="20" height="2" rx="1" fill="currentColor"/>
+        <rect y="15" width="20" height="2" rx="1" fill="currentColor"/>
+      </svg>
+    </button>
+
+    <!-- Bottom Info Bar -->
+    <div id="info-bar" role="status">
+      <div class="info-bar-left">
+        <span class="info-bar-dot" aria-hidden="true"></span>
+        <span id="current-scene-name">Cargando…</span>
+      </div>
+      <span id="hotspot-count" class="info-bar-right"></span>
+    </div>
+
+    <!-- Hotspot Popup Modal -->
+    <div id="hotspot-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
+      <div class="popup-panel">
+        <div class="popup-header">
+          <h3 id="popup-title"></h3>
+          <button id="popup-close" aria-label="Cerrar información">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+              <path d="M4 4L14 14M14 4L4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+        <div class="popup-divider"></div>
+        <div id="popup-body"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Pannellum Engine -->
+  <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+
+  <!-- App Logic -->
+  <script src="app.js"></script>
+</body>
+</html>
