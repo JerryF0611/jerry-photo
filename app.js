@@ -258,11 +258,13 @@
 
       // 4. Handle load events
       viewer.on('load', function () {
-        // Dismiss loader on first scene load
-        setTimeout(function () {
-          els.loader.classList.add('hidden');
-        }, 300);
+        els.loader.classList.add('hidden');
       });
+      
+      // Fallback para forzar la ocultación en menos de 1 segundo
+      setTimeout(function () {
+        els.loader.classList.add('hidden');
+      }, 800);
 
       viewer.on('scenechange', function (sceneId) {
         var scene = projectData.scenes.find(function (s) {

@@ -121,7 +121,7 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   justify-content: center;
   background: var(--c-bg);
-  transition: opacity var(--dur-slow) var(--ease), visibility var(--dur-slow);
+  transition: opacity 0.2s var(--ease), visibility 0.2s;
 }
 
 #loader.hidden {
