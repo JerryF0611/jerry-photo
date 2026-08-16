@@ -11,7 +11,7 @@
   // Add entries here when new panorama images are available.
   const PANO_MAP = {
     '6a7e39ed3bb05556950105fe': 'Recorrido taller.JPG',
-    // '6a7e56a54c9b897aba05dc5f': '' // Scene 2 — no equirectangular image available yet
+    'scene_ahuacatlan': 'ahuacatlan.jpg'
   };
 
   // ── DOM References ─────────────────────────
