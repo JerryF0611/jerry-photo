@@ -10,8 +10,8 @@
   // Maps scene IDs from db.json to local panorama files.
   // Add entries here when new panorama images are available.
   const PANO_MAP = {
-    '6a7e39ed3bb05556950105fe': 'Taller.jpg',
-    'scene_ahuacatlan': 'ahuacatlan.jpg'
+    '6a7e39ed3bb05556950105fe': 'https://wzgubqwidzl4yeln.public.blob.vercel-storage.com/Taller-5xv8GpcmZhmK8snoI4RbLYky5iurCr.jpg',
+    'scene_ahuacatlan': 'https://wzgubqwidzl4yeln.public.blob.vercel-storage.com/ahuacatlan-nWbLDX7hI2h6bS5lWhSgJcMXHOnxXi.jpg'
   };
 
   // ── DOM References ─────────────────────────
