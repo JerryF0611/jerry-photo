@@ -10,7 +10,7 @@
   // Maps scene IDs from db.json to local panorama files.
   // Add entries here when new panorama images are available.
   const PANO_MAP = {
-    '6a7e39ed3bb05556950105fe': 'Recorrido taller.JPG',
+    '6a7e39ed3bb05556950105fe': 'recorrido_taller.jpg',
     'scene_ahuacatlan': 'ahuacatlan.jpg'
   };
 
