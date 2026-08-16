@@ -735,3 +735,11 @@ h1, h2, h3, h4, h5, h6 {
   0%, 100% { opacity: 1; }
   50%      { opacity: 0.4; }
 }
+
+/* Hide Pannellum's default white grid loader */
+.pnlm-load-box, .pnlm-lbox {
+  display: none !important;
+}
+.pnlm-container {
+  background: var(--c-bg) !important;
+}
