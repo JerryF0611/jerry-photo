@@ -1,313 +1,258 @@
 /* =============================================
-   Directorio 360° — Ahuacatlán
-   Application Logic
+   JerryPhoto | Elite UI Application Logic
    ============================================= */
 
 (function () {
   'use strict';
 
   // ── Configuration ──────────────────────────
-  // Maps scene IDs from db.json to local panorama files.
-  // Add entries here when new panorama images are available.
   const PANO_MAP = {
-    '6a7e39ed3bb05556950105fe': 'https://wzgubqwidzl4yeln.public.blob.vercel-storage.com/Taller-5xv8GpcmZhmK8snoI4RbLYky5iurCr.jpg',
-    'scene_ahuacatlan': 'https://wzgubqwidzl4yeln.public.blob.vercel-storage.com/ahuacatlan-nWbLDX7hI2h6bS5lWhSgJcMXHOnxXi.jpg'
+    'scene_ahuacatlan': 'ahuacatlan.jpg',
+    'scene_barranca_de_oro': 'barranca-de-oro.jpg'
   };
 
-  // ── DOM References ─────────────────────────
-  const $ = (id) => document.getElementById(id);
   const els = {
-    panorama:     $('panorama'),
-    sidebar:      $('sidebar'),
-    toggle:       $('sidebar-toggle'),
-    sceneList:    $('scene-list'),
-    popup:        $('hotspot-popup'),
-    popupTitle:   $('popup-title'),
-    popupBody:    $('popup-body'),
-    popupClose:   $('popup-close'),
-    sceneName:    $('current-scene-name'),
-    hotspotCount: $('hotspot-count'),
-    loader:       $('loader'),
+    loader: document.getElementById('loader'),
+    loaderProgress: document.querySelector('.loader-progress'),
+    panoramaWrapper: document.querySelector('.panorama-container'),
+    panoramaOverlay: document.querySelector('.panorama-overlay'),
+    sceneList: document.getElementById('scene-list'),
+    currentSceneName: document.getElementById('current-scene-name'),
+    cursor: document.querySelector('.cursor')
   };
 
-  // ── State ──────────────────────────────────
   let viewer = null;
   let projectData = null;
-  let sidebarOpen = false;
 
+  // ── 1. Data Loading ─────────────────────────
   async function loadConfig() {
-    // Se agrega una marca de tiempo para evitar el caché agresivo del navegador
-    const res = await fetch('db.json?v=' + new Date().getTime());
-    if (!res.ok) throw new Error(`HTTP ${res.status}: No se pudo cargar db.json`);
-    return res.json();
+    try {
+      const res = await fetch('db.json?v=' + new Date().getTime());
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      return await res.json();
+    } catch (e) {
+      console.error('Error loading db.json', e);
+      return null;
+    }
   }
 
-  // ── Hotspot Click Handler ──────────────────
-  function handleHotspotClick(event, args) {
-    if (event) event.stopPropagation();
-    els.popupTitle.textContent = args.title || '';
-    els.popupBody.innerHTML = args.content || '<p>Sin información adicional.</p>';
-    els.popup.classList.add('visible');
+  // ── 2. Initialize Lenis (Smooth Scroll) ───
+  function initLenis() {
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // expo out
+      direction: 'vertical',
+      gestureDirection: 'vertical',
+      smooth: true,
+      mouseMultiplier: 1,
+      smoothTouch: false,
+      touchMultiplier: 2,
+      infinite: false,
+    });
+
+    function raf(time) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Integrate GSAP with Lenis
+    if (window.ScrollTrigger) {
+      lenis.on('scroll', ScrollTrigger.update);
+      gsap.ticker.add((time)=>{
+        lenis.raf(time * 1000);
+      });
+      gsap.ticker.lagSmoothing(0, 0);
+    }
   }
 
-  function hidePopup() {
-    els.popup.classList.remove('visible');
+  // ── 3. Initialize GSAP Animations ─────────
+  function initAnimations() {
+    // Intro Loader Animation
+    gsap.to(els.loaderProgress, { width: '100%', duration: 0.8, ease: 'power2.inOut' });
+    gsap.to('.loader-title', { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
+    
+    gsap.to(els.loader, {
+      yPercent: -100,
+      duration: 1.2,
+      delay: 1,
+      ease: 'expo.inOut',
+      onComplete: () => {
+        els.loader.style.display = 'none';
+        document.body.classList.remove('loading');
+        animateHero();
+      }
+    });
+
+    // Showcase ScrollTrigger
+    gsap.to(els.panoramaWrapper, {
+      scrollTrigger: {
+        trigger: '.showcase-section',
+        start: 'top 80%',
+        end: 'top 20%',
+        scrub: 1
+      },
+      scale: 1,
+      opacity: 1,
+      ease: 'power2.out'
+    });
   }
 
-  // ── Build Pannellum Configuration ──────────
-  function buildViewerConfig(data) {
+  function animateHero() {
+    gsap.fromTo('.hero-title .line', 
+      { y: '100%' },
+      { y: '0%', duration: 1.2, stagger: 0.1, ease: 'expo.out' }
+    );
+    gsap.fromTo('.hero-subtitle', 
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 1, delay: 0.4, ease: 'power3.out' }
+    );
+  }
+
+  // ── 4. Initialize Custom Cursor & Magnet ──
+  function initCursor() {
+    if (window.innerWidth < 768) return; // Disable on mobile
+
+    document.addEventListener('mousemove', (e) => {
+      gsap.to(els.cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        duration: 0.1,
+        ease: 'power2.out'
+      });
+    });
+
+    // Magnetic buttons
+    const magneticBtns = document.querySelectorAll('.magnetic-btn');
+    magneticBtns.forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const strength = btn.dataset.strength || 20;
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * strength;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * strength;
+        
+        gsap.to(btn, { x: x, y: y, duration: 0.3, ease: 'power2.out' });
+        els.cursor.classList.add('active');
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.7, ease: 'elastic.out(1, 0.3)' });
+        els.cursor.classList.remove('active');
+      });
+    });
+
+    // Interactive regions
+    const interactiveEls = document.querySelectorAll('.accordion-item, .panorama-container');
+    interactiveEls.forEach(el => {
+      el.addEventListener('mouseenter', () => els.cursor.classList.add('active'));
+      el.addEventListener('mouseleave', () => els.cursor.classList.remove('active'));
+    });
+  }
+
+  // ── 5. Initialize Pannellum ───────────────
+  function initViewer(data) {
     const scenes = {};
     let firstSceneId = null;
 
-    data.scenes.forEach(function (scene) {
+    data.scenes.forEach(scene => {
       const panoramaFile = PANO_MAP[scene._id];
-      if (!panoramaFile) return; // skip scenes without a local panorama
+      if (!panoramaFile) return;
 
       if (!firstSceneId) firstSceneId = scene._id;
 
-      const hotSpots = (scene.hotspots || []).map(function (hs) {
-        return {
-          pitch:            hs.position.y,
-          yaw:              hs.position.x,
-          type:             'info',
-          text:             hs.title,
-          clickHandlerFunc: handleHotspotClick,
-          clickHandlerArgs: {
-            title:   hs.title,
-            content: hs.content,
-          },
-        };
-      });
-
       scenes[scene._id] = {
-        title:    scene.title,
-        type:     'equirectangular',
+        title: scene.title,
+        type: 'equirectangular',
         panorama: panoramaFile,
-        pitch:    scene.default_view.vlookat,
-        yaw:      scene.default_view.hlookat,
-        hfov:     scene.default_view.fov,
-        minHfov:  scene.min_zoom || 40,
-        maxHfov:  scene.max_zoom || 120,
+        pitch: scene.default_view.vlookat || 0,
+        yaw: scene.default_view.hlookat || 0,
+        hfov: scene.default_view.fov || 90,
         autoRotate: -1.5,
-        autoRotateInactivityDelay: 8000,
-        hotSpots: hotSpots,
+        autoRotateInactivityDelay: 4000
       };
     });
 
-    if (!firstSceneId) {
-      throw new Error('No se encontraron escenas con panoramas disponibles.');
-    }
-
-    return {
+    viewer = pannellum.viewer('panorama', {
       default: {
-        firstScene:       firstSceneId,
-        autoLoad:         true,
-        sceneFadeDuration: 800,
-        compass:          false,
-        showControls:     true,
-        mouseZoom:        true,
-        keyboardZoom:     true,
-        friction:         0.12,
-        draggable:        true,
-        disableKeyboardCtrl: false,
-        showFullscreenCtrl:  true,
+        firstScene: firstSceneId,
+        autoLoad: true,
+        sceneFadeDuration: 1000,
+        showControls: false,
+        mouseZoom: true
       },
-      scenes: scenes,
-    };
+      scenes: scenes
+    });
+
+    // Update scene name on change
+    viewer.on('scenechange', (sceneId) => {
+      const scene = data.scenes.find(s => s._id === sceneId);
+      if (scene) els.currentSceneName.textContent = scene.title;
+    });
+
+    // Initial scene name
+    const initialScene = data.scenes.find(s => s._id === firstSceneId);
+    if (initialScene) els.currentSceneName.textContent = initialScene.title;
+
+    // Remove overlay on interaction
+    els.panoramaWrapper.addEventListener('mousedown', () => {
+      els.panoramaOverlay.classList.add('hidden');
+    });
   }
 
-  // ── Build Scene List in Sidebar ────────────
-  function buildSceneList(data) {
+  // ── 6. Build Accordion Cards ──────────────
+  function buildAccordion(data) {
     els.sceneList.innerHTML = '';
+    
+    data.scenes.forEach((scene, i) => {
+      if (!PANO_MAP[scene._id]) return;
 
-    data.scenes.forEach(function (scene, index) {
-      var hasPano = !!PANO_MAP[scene._id];
-      var card = document.createElement('button');
-      card.className = 'scene-card' + (hasPano ? '' : ' disabled');
-      card.setAttribute('data-scene-id', scene._id);
+      const btn = document.createElement('button');
+      btn.className = i === 0 ? 'accordion-item active' : 'accordion-item';
+      
+      // Inline style for background image
+      const bgUrl = PANO_MAP[scene._id];
+      btn.style.setProperty('--bg-image', `url('${bgUrl}')`);
 
-      var hotspotLabel = scene.hotspots.length === 1
-        ? '1 punto de interés'
-        : scene.hotspots.length + ' puntos de interés';
+      btn.innerHTML = `
+        <div class="accordion-content">
+          <h3 class="accordion-title">${scene.title}</h3>
+          <span class="accordion-meta">Explorar en 360°</span>
+        </div>
+      `;
 
-      card.innerHTML =
-        '<div class="scene-card-thumb">' +
-          '<span class="scene-card-icon">' + (hasPano ? '🌐' : '📷') + '</span>' +
-        '</div>' +
-        '<div class="scene-card-info">' +
-          '<h3 class="scene-card-title">' + escapeHtml(scene.title) + '</h3>' +
-          '<span class="scene-card-meta">' +
-            hotspotLabel +
-            (hasPano ? '' : ' · Sin panorama') +
-          '</span>' +
-        '</div>';
+      btn.addEventListener('click', () => {
+        // Remove active class from all
+        document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+        
+        // Load scene in viewer
+        if(viewer) viewer.loadScene(scene._id);
+        
+        // Smooth scroll back to showcase
+        const lenis = window.Lenis; // Wait, we didn't export lenis globally. Let's just use native scroll or GSAP
+        document.getElementById('showcase').scrollIntoView({ behavior: 'smooth' });
+      });
 
-      if (hasPano) {
-        card.addEventListener('click', function () {
-          viewer.loadScene(scene._id);
-          setActiveScene(scene._id);
-          updateInfoBar(scene);
-          // Collapse sidebar on mobile
-          if (window.innerWidth < 768) {
-            closeSidebar();
-          }
-        });
-      }
-
-      // Staggered entrance animation
-      card.style.opacity = '0';
-      card.style.transform = 'translateY(8px)';
-      card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
-      setTimeout(function () {
-        card.style.opacity = '1';
-        card.style.transform = 'translateY(0)';
-      }, 80 * index);
-
-      els.sceneList.appendChild(card);
+      els.sceneList.appendChild(btn);
     });
   }
 
-  function setActiveScene(sceneId) {
-    var cards = els.sceneList.querySelectorAll('.scene-card');
-    cards.forEach(function (card) {
-      card.classList.toggle('active', card.getAttribute('data-scene-id') === sceneId);
-    });
-  }
-
-  function updateInfoBar(scene) {
-    els.sceneName.textContent = scene.title;
-    var count = scene.hotspots.length;
-    els.hotspotCount.textContent = count === 1
-      ? '1 punto de interés'
-      : count + ' puntos de interés';
-  }
-
-  // ── Sidebar Controls ───────────────────────
-  function openSidebar() {
-    els.sidebar.classList.add('open');
-    sidebarOpen = true;
-  }
-
-  function closeSidebar() {
-    els.sidebar.classList.remove('open');
-    sidebarOpen = false;
-  }
-
-  function toggleSidebar() {
-    if (sidebarOpen) {
-      closeSidebar();
-    } else {
-      openSidebar();
-    }
-  }
-
-  // ── Utility ────────────────────────────────
-  function escapeHtml(str) {
-    var div = document.createElement('div');
-    div.appendChild(document.createTextNode(str));
-    return div.innerHTML;
-  }
-
-  // ── Event Binding ──────────────────────────
-  function bindEvents() {
-    // Sidebar toggle
-    els.toggle.addEventListener('click', toggleSidebar);
-
-    // Popup close
-    els.popupClose.addEventListener('click', hidePopup);
-
-    // Click outside popup to close
-    els.popup.addEventListener('click', function (e) {
-      if (e.target === els.popup) hidePopup();
-    });
-
-    // Keyboard: Escape closes popup or sidebar
-    document.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        if (els.popup.classList.contains('visible')) {
-          hidePopup();
-        } else if (sidebarOpen) {
-          closeSidebar();
-        }
-      }
-    });
-
-    // Resize: adjust sidebar behavior
-    var resizeTimer;
-    window.addEventListener('resize', function () {
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function () {
-        if (window.innerWidth >= 768 && !sidebarOpen) {
-          // Don't force open on resize, user's choice is preserved
-        }
-      }, 150);
-    });
-  }
-
-  // ── Initialize ─────────────────────────────
+  // ── Main Init ──────────────────────────────
   async function init() {
-    try {
-      // 1. Load configuration
-      projectData = await loadConfig();
-
-      // 2. Build Pannellum config
-      var config = buildViewerConfig(projectData);
-
-      // 3. Initialize viewer
-      viewer = pannellum.viewer('panorama', config);
-
-      // 4. Handle load events
-      viewer.on('load', function () {
-        els.loader.classList.add('hidden');
-      });
-
-      viewer.on('scenechange', function (sceneId) {
-        var scene = projectData.scenes.find(function (s) {
-          return s._id === sceneId;
-        });
-        if (scene) {
-          setActiveScene(sceneId);
-          updateInfoBar(scene);
-        }
-      });
-
-      // 5. Build sidebar content
-      buildSceneList(projectData);
-
-      // 6. Set initial state
-      var firstScene = projectData.scenes.find(function (s) {
-        return !!PANO_MAP[s._id];
-      });
-      if (firstScene) {
-        updateInfoBar(firstScene);
-        setActiveScene(firstScene._id);
-      }
-
-      // 7. Bind UI events
-      bindEvents();
-
-      // 8. Open sidebar on desktop by default
-      if (window.innerWidth >= 768) {
-        setTimeout(openSidebar, 600);
-      }
-
-    } catch (error) {
-      console.error('Error al inicializar el visor 360°:', error);
-      els.loader.innerHTML =
-        '<div class="loader-content">' +
-          '<div class="loader-error">' +
-            '<p style="font-size:1.1rem;font-weight:600;">Error al cargar el recorrido</p>' +
-            '<p class="loader-error-detail">' + escapeHtml(error.message) + '</p>' +
-          '</div>' +
-        '</div>';
+    initLenis();
+    initCursor();
+    
+    projectData = await loadConfig();
+    if (projectData) {
+      buildAccordion(projectData);
+      initViewer(projectData);
+    } else {
+      els.currentSceneName.textContent = 'Error cargando datos';
     }
+
+    initAnimations();
   }
 
-  // ── Start ──────────────────────────────────
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  document.addEventListener('DOMContentLoaded', init);
 
 })();

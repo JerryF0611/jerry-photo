@@ -3,96 +3,127 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>JerryPhoto</title>
-  <meta name="description" content="Recorrido virtual interactivo 360° por Ahuacatlán, Nayarit. Explora el Crucero Principal, Agroquímicos Bendita Cosecha y el Volcán Ceboruco.">
-  <meta name="robots" content="index, follow">
-
-  <!-- Open Graph -->
-  <meta property="og:title" content="JerryPhoto">
-  <meta property="og:description" content="Recorrido virtual interactivo 360° por Ahuacatlán, Nayarit.">
-  <meta property="og:type" content="website">
-
-  <!-- Pannellum -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
-
-  <!-- Fonts -->
+  <title>JerryPhoto | Elite 360° Experience</title>
+  <meta name="description" content="Recorridos virtuales interactivos 360° de alto nivel.">
+  
+  <!-- Fonts: Inter for that clean, technical look -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Pannellum CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
+  
   <!-- App Styles -->
   <link rel="stylesheet" href="index.css">
 </head>
-<body>
+<body class="loading">
 
-  <!-- ════ Loading Screen ════ -->
-  <div id="loader">
-    <div class="loader-content">
-      <div class="loader-spinner"></div>
-      <h2 class="loader-title">JerryPhoto</h2>
-      <p class="loader-subtitle">Cargando recorrido virtual…</p>
+  <!-- Custom Cursor -->
+  <div class="cursor"></div>
+
+  <!-- Intro Loader -->
+  <div id="loader" class="loader">
+    <div class="loader-text-wrapper">
+      <h1 class="loader-title">JerryPhoto</h1>
+      <div class="loader-progress"></div>
     </div>
   </div>
 
-  <!-- ════ Main Application ════ -->
-  <div id="app">
+  <nav class="navbar">
+    <div class="nav-brand">JERRYPHOTO</div>
+    <div class="nav-links">
+      <a href="#projects" class="magnetic-btn" data-strength="20">Proyectos</a>
+      <a href="mailto:contacto@jerryphoto.com" class="magnetic-btn primary-btn" data-strength="40">Contacto</a>
+    </div>
+  </nav>
 
-    <!-- Pannellum Panorama Viewer -->
-    <div id="panorama"></div>
-
-    <!-- Sidebar Panel -->
-    <aside id="sidebar" aria-label="Panel de escenas">
-      <div class="sidebar-header">
-        <div class="sidebar-brand">
-          <span class="sidebar-logo" aria-hidden="true">360°</span>
-          <div>
-            <h1 class="sidebar-title">JerryPhoto</h1>
+  <main id="smooth-wrapper">
+    <div id="smooth-content">
+      
+      <!-- HERO SECTION -->
+      <section id="hero" class="hero-section">
+        <div class="hero-container">
+          <h1 class="hero-title">
+            <span class="line-wrap"><span class="line">Explora la</span></span>
+            <span class="line-wrap"><span class="line">realidad con</span></span>
+            <span class="line-wrap"><span class="line">precisión.</span></span>
+          </h1>
+          <p class="hero-subtitle">Visualización inmersiva en 360° para espacios arquitectónicos y naturales. Una experiencia digital sin fricciones.</p>
+          <div class="scroll-indicator">
+            <div class="scroll-line"></div>
           </div>
         </div>
-      </div>
-      <div class="sidebar-divider"></div>
-      <p class="sidebar-section-label">Escenas</p>
-      <div id="scene-list" role="list"></div>
-    </aside>
+      </section>
 
-    <!-- Sidebar Toggle Button -->
-    <button id="sidebar-toggle" aria-label="Abrir o cerrar panel de escenas" title="Menú">
-      <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-        <rect y="3"  width="20" height="2" rx="1" fill="currentColor"/>
-        <rect y="9"  width="20" height="2" rx="1" fill="currentColor"/>
-        <rect y="15" width="20" height="2" rx="1" fill="currentColor"/>
-      </svg>
-    </button>
-
-    <!-- Bottom Info Bar -->
-    <div id="info-bar" role="status">
-      <div class="info-bar-left">
-        <span class="info-bar-dot" aria-hidden="true"></span>
-        <span id="current-scene-name">Cargando…</span>
-      </div>
-      <span id="hotspot-count" class="info-bar-right"></span>
-    </div>
-
-    <!-- Hotspot Popup Modal -->
-    <div id="hotspot-popup" role="dialog" aria-modal="true" aria-labelledby="popup-title">
-      <div class="popup-panel">
-        <div class="popup-header">
-          <h3 id="popup-title"></h3>
-          <button id="popup-close" aria-label="Cerrar información">
-            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
-              <path d="M4 4L14 14M14 4L4 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </button>
+      <!-- 360 SHOWCASE SECTION -->
+      <section id="showcase" class="showcase-section">
+        <div class="showcase-wrapper">
+          <div class="showcase-header">
+            <h2 class="section-heading">Vista Interactiva</h2>
+            <div id="current-scene-name" class="scene-badge">Cargando...</div>
+          </div>
+          
+          <div class="panorama-container">
+            <div id="panorama"></div>
+            <!-- Overlay that disappears when interacting -->
+            <div class="panorama-overlay">
+              <span class="drag-text">Arrastra para explorar</span>
+            </div>
+          </div>
         </div>
-        <div class="popup-divider"></div>
-        <div id="popup-body"></div>
-      </div>
+      </section>
+
+      <!-- PROJECTS (ACCORDION) SECTION -->
+      <section id="projects" class="projects-section">
+        <div class="projects-container">
+          <h2 class="section-heading mb-large">Galería de Espacios</h2>
+          <div class="accordion-container" id="scene-list">
+            <!-- Cards will be injected by JS -->
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="footer">
+        <div class="footer-content">
+          <h2 class="footer-title">Iniciemos tu proyecto.</h2>
+          <a href="https://www.instagram.com/photop.v.r?igsh=MXExczlkenFmZHo1&utm_source=qr" target="_blank" rel="noopener noreferrer" class="huge-social-btn magnetic-btn" data-strength="20">
+            <svg width="20" height="20" viewBox="0 0 24 24">
+              <defs>
+                <radialGradient id="igGrad" r="150%" cx="30%" cy="107%">
+                  <stop stop-color="#fdf497" offset="0" />
+                  <stop stop-color="#fd5949" offset="0.45" />
+                  <stop stop-color="#d6249f" offset="0.6" />
+                  <stop stop-color="#285AEB" offset="0.9" />
+                </radialGradient>
+              </defs>
+              <rect width="24" height="24" rx="6" fill="url(#igGrad)" />
+              <rect x="5" y="5" width="14" height="14" rx="4" fill="none" stroke="white" stroke-width="2" />
+              <circle cx="12" cy="12" r="3.5" fill="none" stroke="white" stroke-width="2" />
+              <circle cx="16.5" cy="7.5" r="1" fill="white" />
+            </svg>
+            <span>Jerry Flores</span>
+          </a>
+
+        </div>
+        <div class="footer-bottom">
+          <p>© 2026 JerryPhoto. Todos los derechos reservados.</p>
+          <p>Experiencia inmersiva</p>
+        </div>
+      </footer>
+
     </div>
+  </main>
 
-  </div>
-
-  <!-- Pannellum Engine -->
+  <!-- Scripts -->
+  <!-- Lenis (Smooth Scroll) -->
+  <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+  <!-- GSAP Core & ScrollTrigger -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <!-- Pannellum -->
   <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
-
   <!-- App Logic -->
   <script src="app.js"></script>
 </body>

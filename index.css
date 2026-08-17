@@ -1,185 +1,242 @@
 /* =============================================
-   Directorio 360° — Ahuacatlán
-   Design System & Component Styles
+   JerryPhoto | Elite UI Styles
    ============================================= */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap');
-
-/* -------------------------------------------
-   1. Design Tokens
-   ------------------------------------------- */
 :root {
-  /* Colors */
-  --c-bg:             #0a0a0f;
-  --c-surface:        rgba(16, 16, 24, 0.88);
-  --c-surface-solid:  #10101a;
-  --c-surface-hover:  rgba(26, 26, 40, 0.92);
-  --c-accent:         #c8963e;
-  --c-accent-hover:   #daa84f;
-  --c-accent-glow:    rgba(200, 150, 62, 0.22);
-  --c-text:           #ede9e0;
-  --c-text-muted:     rgba(237, 233, 224, 0.52);
-  --c-text-dim:       rgba(237, 233, 224, 0.3);
-  --c-border:         rgba(255, 255, 255, 0.06);
-  --c-border-light:   rgba(255, 255, 255, 0.1);
-  --c-success:        #4ecdc4;
-  --c-danger:         #e85d5d;
-
-  /* Typography */
-  --font:         'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  --fs-2xs:       0.625rem;   /* 10 */
-  --fs-xs:        0.6875rem;  /* 11 */
-  --fs-sm:        0.8125rem;  /* 13 */
-  --fs-base:      0.9375rem;  /* 15 */
-  --fs-md:        1.0625rem;  /* 17 */
-  --fs-lg:        1.25rem;    /* 20 */
-  --fs-xl:        1.5rem;     /* 24 */
-  --fs-2xl:       1.875rem;   /* 30 */
-
-  /* Spacing */
-  --sp-2xs:  4px;
-  --sp-xs:   6px;
-  --sp-sm:   8px;
-  --sp-md:   16px;
-  --sp-lg:   24px;
-  --sp-xl:   32px;
-  --sp-2xl:  48px;
-
-  /* Radii */
-  --r-sm:    6px;
-  --r-md:    10px;
-  --r-lg:    16px;
-  --r-xl:    24px;
-  --r-full:  999px;
-
-  /* Shadows */
-  --shadow-sm:   0 2px 8px rgba(0, 0, 0, 0.25);
-  --shadow-md:   0 4px 20px rgba(0, 0, 0, 0.35);
-  --shadow-lg:   0 8px 40px rgba(0, 0, 0, 0.45);
-  --shadow-xl:   0 16px 56px rgba(0, 0, 0, 0.55);
-
-  /* Motion */
-  --ease:        cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out:    cubic-bezier(0.0, 0, 0.2, 1);
-  --ease-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
-  --dur-fast:    150ms;
-  --dur:         280ms;
-  --dur-slow:    450ms;
-
-  /* Layout */
-  --sidebar-w:   320px;
-  --infobar-h:   46px;
+  --c-bg: #050505;
+  --c-surface: #111111;
+  --c-surface-hover: #1a1a1a;
+  --c-text: #F5F5F7;
+  --c-text-muted: #86868b;
+  --c-accent: #ffffff;
+  
+  --font-main: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  
+  /* Elite easing for animations */
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.76, 0, 0.24, 1);
+  
+  --border-radius: 16px;
+  --padding-page: max(5vw, 24px);
 }
 
-
-/* -------------------------------------------
-   2. Reset & Base
-   ------------------------------------------- */
-*, *::before, *::after {
+/* ── Reset & Base ── */
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
-  width: 100%;
-  overflow: hidden;
-}
-
-body {
-  font-family: var(--font);
-  background: var(--c-bg);
+html {
+  background-color: var(--c-bg);
   color: var(--c-text);
-  line-height: 1.5;
+  font-family: var(--font-main);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-button {
+body {
+  overflow-x: hidden;
+  /* Custom cursor will handle pointer */
+  cursor: none; 
+}
+
+/* Fix for pannellum default white background */
+.pnlm-load-box, .pnlm-lbox {
+  display: none !important;
+}
+.pnlm-container {
+  background: var(--c-surface) !important;
+}
+
+a, button {
+  cursor: none; /* Let custom cursor handle it */
   font-family: inherit;
-  border: none;
-  cursor: pointer;
-  background: none;
-  color: inherit;
 }
 
-h1, h2, h3, h4, h5, h6 {
-  font-weight: 600;
-  line-height: 1.3;
+/* ── Custom Cursor ── */
+.cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  background-color: var(--c-accent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s var(--ease-expo), height 0.3s var(--ease-expo), background-color 0.3s;
+  mix-blend-mode: difference;
 }
 
+.cursor.active {
+  width: 60px;
+  height: 60px;
+  background-color: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(4px);
+  mix-blend-mode: normal;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
 
-/* -------------------------------------------
-   3. Loading Screen
-   ------------------------------------------- */
-#loader {
+/* ── Loader ── */
+.loader {
   position: fixed;
   inset: 0;
-  z-index: 9999;
+  background: var(--c-bg);
+  z-index: 9000;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--c-bg);
-  transition: opacity 0.2s var(--ease), visibility 0.2s;
 }
-
-#loader.hidden {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.loader-content {
+.loader-text-wrapper {
+  overflow: hidden;
   text-align: center;
-  animation: fadeSlideUp 0.6s var(--ease-out) both;
 }
-
-.loader-spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto var(--sp-lg);
-  border: 3px solid var(--c-border-light);
-  border-top-color: var(--c-accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
 .loader-title {
-  font-size: var(--fs-xl);
-  font-weight: 700;
+  font-size: 2rem;
+  font-weight: 500;
   letter-spacing: -0.02em;
-  margin-bottom: var(--sp-xs);
-  background: linear-gradient(135deg, var(--c-text), var(--c-accent));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  opacity: 0;
+  transform: translateY(100%);
+}
+.loader-progress {
+  height: 2px;
+  background: var(--c-accent);
+  width: 0%;
+  margin-top: 24px;
 }
 
-.loader-subtitle {
-  font-size: var(--fs-sm);
-  color: var(--c-text-muted);
-  letter-spacing: 0.02em;
+/* ── Navbar ── */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 32px var(--padding-page);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  mix-blend-mode: difference;
 }
 
-.loader-error {
-  text-align: center;
-  color: var(--c-danger);
-}
-.loader-error-detail {
-  margin-top: var(--sp-sm);
-  font-size: var(--fs-sm);
-  color: var(--c-text-muted);
+.nav-brand {
+  font-weight: 600;
+  font-size: 1.1rem;
+  letter-spacing: -0.02em;
 }
 
+.nav-links {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
 
-/* -------------------------------------------
-   4. App Layout
-   ------------------------------------------- */
-#app {
+.nav-links a {
+  color: var(--c-text);
+  text-decoration: none;
+  font-size: 0.95rem;
+  font-weight: 500;
+  display: inline-block;
+}
+
+/* ── Hero Section ── */
+.hero-section {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: 0 var(--padding-page);
   position: relative;
+}
+
+.hero-title {
+  font-size: clamp(4rem, 8vw, 8rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.04em;
+  margin-bottom: 24px;
+}
+
+.line-wrap {
+  overflow: hidden;
+  display: block;
+}
+.line-wrap .line {
+  display: block;
+}
+
+.hero-subtitle {
+  font-size: clamp(1.1rem, 1.5vw, 1.5rem);
+  color: var(--c-text-muted);
+  max-width: 500px;
+  line-height: 1.5;
+}
+
+.scroll-indicator {
+  position: absolute;
+  bottom: 48px;
+  left: var(--padding-page);
+  height: 100px;
+  width: 1px;
+  background: rgba(255, 255, 255, 0.2);
+  overflow: hidden;
+}
+
+.scroll-line {
   width: 100%;
   height: 100%;
+  background: var(--c-accent);
+  transform: translateY(-100%);
+  animation: scrollDown 2s var(--ease-in-out) infinite;
+}
+
+@keyframes scrollDown {
+  0% { transform: translateY(-100%); }
+  50% { transform: translateY(0); }
+  100% { transform: translateY(100%); }
+}
+
+/* ── Showcase 360 Section ── */
+.showcase-section {
+  padding: 120px var(--padding-page);
+  min-height: 100vh;
+}
+
+.showcase-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 40px;
+}
+
+.section-heading {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 500;
+  letter-spacing: -0.03em;
+}
+
+.mb-large {
+  margin-bottom: 64px;
+}
+
+.scene-badge {
+  font-size: 0.9rem;
+  color: var(--c-text-muted);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 8px 16px;
+  border-radius: 20px;
+}
+
+.panorama-container {
+  position: relative;
+  width: 100%;
+  height: 70vh;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transform: scale(0.95);
+  opacity: 0;
+  will-change: transform, opacity;
 }
 
 #panorama {
@@ -187,559 +244,170 @@ h1, h2, h3, h4, h5, h6 {
   height: 100%;
 }
 
-
-/* -------------------------------------------
-   5. Pannellum Overrides
-   ------------------------------------------- */
-
-/* ---- Hotspot Indicator ---- */
-.pnlm-hotspot-base.pnlm-info {
-  width: 26px !important;
-  height: 26px !important;
-  background: var(--c-accent) !important;
-  border: 2.5px solid rgba(255,255,255,0.85) !important;
-  border-radius: 50% !important;
-  box-shadow:
-    0 0 0 5px var(--c-accent-glow),
-    var(--shadow-md) !important;
-  transition: transform var(--dur) var(--ease-bounce),
-              box-shadow var(--dur) var(--ease) !important;
-  animation: hotspotPulse 2.8s ease-in-out infinite !important;
-  opacity: 1 !important;
-}
-.pnlm-hotspot-base.pnlm-info:hover {
-  transform: scale(1.25) !important;
-  box-shadow:
-    0 0 0 8px var(--c-accent-glow),
-    var(--shadow-lg) !important;
-}
-
-/* ---- Hotspot Tooltip ---- */
-.pnlm-tooltip span {
-  font-family: var(--font) !important;
-  font-size: var(--fs-sm) !important;
-  font-weight: 500 !important;
-  color: var(--c-text) !important;
-  background: var(--c-surface-solid) !important;
-  border: 1px solid var(--c-border-light) !important;
-  border-radius: var(--r-sm) !important;
-  padding: 6px 12px !important;
-  box-shadow: var(--shadow-md) !important;
-  white-space: nowrap !important;
-  max-width: 240px !important;
-  backdrop-filter: blur(16px) !important;
-  letter-spacing: 0.01em !important;
-}
-
-/* ---- Controls ---- */
-.pnlm-controls-container {
-  bottom: calc(var(--infobar-h) + 12px) !important;
-  right: 12px !important;
-  top: auto !important;
-}
-.pnlm-zoom-controls,
-.pnlm-fullscreen-toggle-button {
-  background: var(--c-surface) !important;
-  border: 1px solid var(--c-border-light) !important;
-  border-radius: var(--r-sm) !important;
-  backdrop-filter: blur(16px) !important;
-  color: var(--c-text) !important;
-  transition: background var(--dur) var(--ease) !important;
-}
-.pnlm-zoom-controls:hover,
-.pnlm-fullscreen-toggle-button:hover {
-  background: var(--c-surface-hover) !important;
-}
-.pnlm-zoom-in, .pnlm-zoom-out {
-  background-color: transparent !important;
-  filter: invert(1) !important;
-}
-.pnlm-fullscreen-toggle-button {
-  margin-top: 6px !important;
-}
-
-/* Hide default Pannellum title bar and about */
-.pnlm-title-box,
-.pnlm-about-msg,
-.pnlm-author-box,
-.pnlm-load-box {
-  display: none !important;
-}
-
-
-/* -------------------------------------------
-   6. Sidebar
-   ------------------------------------------- */
-#sidebar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: var(--sidebar-w);
-  height: 100%;
-  z-index: 100;
-  display: flex;
-  flex-direction: column;
-  background: var(--c-surface);
-  border-right: 1px solid var(--c-border);
-  backdrop-filter: blur(24px) saturate(1.4);
-  -webkit-backdrop-filter: blur(24px) saturate(1.4);
-  transform: translateX(-100%);
-  transition: transform var(--dur-slow) var(--ease);
-  overflow: hidden;
-}
-
-#sidebar.open {
-  transform: translateX(0);
-}
-
-/* ---- Sidebar Header ---- */
-.sidebar-header {
-  padding: var(--sp-lg) var(--sp-lg) var(--sp-md);
-  flex-shrink: 0;
-}
-
-.sidebar-brand {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-md);
-}
-
-.sidebar-logo {
+.panorama-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: var(--r-md);
-  background: linear-gradient(135deg, var(--c-accent), #a07028);
-  font-size: var(--fs-xs);
-  font-weight: 700;
-  color: #fff;
-  letter-spacing: -0.04em;
-  flex-shrink: 0;
-  box-shadow: 0 2px 12px var(--c-accent-glow);
+  pointer-events: none;
+  transition: opacity 0.5s var(--ease-expo);
 }
 
-.sidebar-title {
-  font-size: var(--fs-md);
-  font-weight: 700;
+.panorama-overlay.hidden {
+  opacity: 0;
+}
+
+.drag-text {
+  font-size: 1.2rem;
+  font-weight: 500;
   letter-spacing: -0.02em;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(10px);
+  padding: 16px 32px;
+  border-radius: 40px;
+}
+
+/* ── Projects Accordion ── */
+.projects-section {
+  padding: 120px var(--padding-page);
+}
+
+.accordion-container {
+  display: flex;
+  height: 500px;
+  gap: 16px;
+  width: 100%;
+}
+
+.accordion-item {
+  flex: 1;
+  position: relative;
+  border-radius: var(--border-radius);
+  background: var(--c-surface);
+  overflow: hidden;
+  transition: flex 0.8s var(--ease-in-out), filter 0.8s var(--ease-in-out);
+  filter: grayscale(100%) brightness(0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 32px;
+  border: none;
+  text-align: left;
   color: var(--c-text);
 }
 
-.sidebar-subtitle {
-  font-size: var(--fs-xs);
-  color: var(--c-text-muted);
-  margin-top: 1px;
-  letter-spacing: 0.02em;
-}
-
-/* ---- Sidebar Divider ---- */
-.sidebar-divider {
-  height: 1px;
-  background: var(--c-border);
-  margin: 0 var(--sp-lg);
-  flex-shrink: 0;
-}
-
-/* ---- Section Label ---- */
-.sidebar-section-label {
-  font-size: var(--fs-2xs);
-  font-weight: 600;
-  color: var(--c-text-dim);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: var(--sp-md) var(--sp-lg) var(--sp-sm);
-  flex-shrink: 0;
-}
-
-/* ---- Scene List ---- */
-#scene-list {
-  flex: 1;
-  overflow-y: auto;
-  padding: 0 var(--sp-sm) var(--sp-lg);
-  scrollbar-width: thin;
-  scrollbar-color: var(--c-border-light) transparent;
-}
-#scene-list::-webkit-scrollbar {
-  width: 5px;
-}
-#scene-list::-webkit-scrollbar-track {
-  background: transparent;
-}
-#scene-list::-webkit-scrollbar-thumb {
-  background: var(--c-border-light);
-  border-radius: var(--r-full);
-}
-
-
-/* -------------------------------------------
-   7. Scene Cards
-   ------------------------------------------- */
-.scene-card {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-md);
-  width: 100%;
-  padding: var(--sp-md);
-  border-radius: var(--r-md);
-  text-align: left;
-  transition: background var(--dur) var(--ease);
-  position: relative;
-}
-
-.scene-card:hover:not(.disabled) {
-  background: var(--c-surface-hover);
-}
-
-.scene-card.active {
-  background: rgba(200, 150, 62, 0.1);
-}
-.scene-card.active::before {
+.accordion-item::before {
   content: '';
   position: absolute;
-  left: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 3px;
-  height: 24px;
-  background: var(--c-accent);
-  border-radius: 0 var(--r-full) var(--r-full) 0;
-}
-
-.scene-card.disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.scene-card-thumb {
-  width: 44px;
-  height: 44px;
-  border-radius: var(--r-sm);
-  background: linear-gradient(135deg, rgba(200,150,62,0.12), rgba(200,150,62,0.04));
-  border: 1px solid var(--c-border);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  font-size: 18px;
-  transition: border-color var(--dur) var(--ease);
-}
-.scene-card:hover:not(.disabled) .scene-card-thumb {
-  border-color: var(--c-border-light);
-}
-.scene-card.active .scene-card-thumb {
-  border-color: var(--c-accent);
-  background: linear-gradient(135deg, rgba(200,150,62,0.18), rgba(200,150,62,0.08));
-}
-
-.scene-card-icon {
-  line-height: 1;
-}
-
-.scene-card-info {
-  min-width: 0;
-  flex: 1;
-}
-
-.scene-card-title {
-  font-size: var(--fs-sm);
-  font-weight: 600;
-  color: var(--c-text);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  letter-spacing: -0.01em;
-}
-
-.scene-card-meta {
-  font-size: var(--fs-2xs);
-  color: var(--c-text-muted);
-  display: block;
-  margin-top: 2px;
-  letter-spacing: 0.01em;
-}
-
-
-/* -------------------------------------------
-   8. Info Bar
-   ------------------------------------------- */
-#info-bar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: var(--infobar-h);
-  z-index: 90;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--sp-lg);
-  background: var(--c-surface);
-  border-top: 1px solid var(--c-border);
-  backdrop-filter: blur(20px) saturate(1.3);
-  -webkit-backdrop-filter: blur(20px) saturate(1.3);
-}
-
-.info-bar-left {
-  display: flex;
-  align-items: center;
-  gap: var(--sp-sm);
-  min-width: 0;
-}
-
-.info-bar-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--c-success);
-  flex-shrink: 0;
-  animation: dotPulse 2.5s ease-in-out infinite;
-}
-
-#current-scene-name {
-  font-size: var(--fs-sm);
-  font-weight: 500;
-  letter-spacing: -0.01em;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.info-bar-right {
-  font-size: var(--fs-xs);
-  color: var(--c-text-muted);
-  letter-spacing: 0.01em;
-  flex-shrink: 0;
-}
-
-
-/* -------------------------------------------
-   9. Hotspot Popup Modal
-   ------------------------------------------- */
-#hotspot-popup {
-  position: fixed;
   inset: 0;
-  z-index: 500;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-  transition: opacity var(--dur) var(--ease),
-              visibility var(--dur);
+  background-image: var(--bg-image);
+  background-size: cover;
+  background-position: center 65%;
+  background-repeat: no-repeat;
+  z-index: 0;
+  opacity: 0.5;
+  transition: opacity 0.8s var(--ease-in-out), transform 0.8s var(--ease-in-out);
 }
 
-#hotspot-popup.visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
+.accordion-item:hover, .accordion-item.active {
+  flex: 3;
+  filter: grayscale(0%) brightness(1);
 }
 
-.popup-panel {
-  background: var(--c-surface-solid);
-  border: 1px solid var(--c-border-light);
-  border-radius: var(--r-lg);
-  width: 90%;
-  max-width: 440px;
-  max-height: 70vh;
-  overflow: hidden;
-  box-shadow: var(--shadow-xl);
-  transform: translateY(12px) scale(0.97);
-  transition: transform var(--dur-slow) var(--ease-bounce);
-  display: flex;
-  flex-direction: column;
-}
-
-#hotspot-popup.visible .popup-panel {
-  transform: translateY(0) scale(1);
-}
-
-.popup-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--sp-lg) var(--sp-lg) var(--sp-md);
-  gap: var(--sp-md);
-}
-
-#popup-title {
-  font-size: var(--fs-md);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  flex: 1;
-  min-width: 0;
-}
-
-#popup-close {
-  width: 32px;
-  height: 32px;
-  border-radius: var(--r-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: var(--c-text-muted);
-  transition: background var(--dur-fast) var(--ease),
-              color var(--dur-fast) var(--ease);
-  flex-shrink: 0;
-}
-#popup-close:hover {
-  background: rgba(255,255,255,0.06);
-  color: var(--c-text);
-}
-
-.popup-divider {
-  height: 1px;
-  background: var(--c-border);
-  margin: 0 var(--sp-lg);
-}
-
-#popup-body {
-  padding: var(--sp-md) var(--sp-lg) var(--sp-lg);
-  font-size: var(--fs-base);
-  line-height: 1.65;
-  color: var(--c-text-muted);
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--c-border-light) transparent;
-}
-#popup-body p {
-  margin-bottom: var(--sp-sm);
-}
-#popup-body p:last-child {
-  margin-bottom: 0;
-}
-#popup-body h5 {
-  color: var(--c-text);
-  font-size: var(--fs-base);
-  font-weight: 600;
-}
-#popup-body b, #popup-body strong {
-  color: var(--c-text);
-  font-weight: 600;
-}
-
-
-/* -------------------------------------------
-   10. Sidebar Toggle
-   ------------------------------------------- */
-#sidebar-toggle {
-  position: fixed;
-  top: var(--sp-md);
-  left: var(--sp-md);
-  z-index: 110;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--r-md);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--c-surface);
-  border: 1px solid var(--c-border);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  color: var(--c-text);
-  box-shadow: var(--shadow-md);
-  transition: background var(--dur) var(--ease),
-              transform var(--dur) var(--ease-bounce),
-              left var(--dur-slow) var(--ease);
-}
-#sidebar-toggle:hover {
-  background: var(--c-surface-hover);
+.accordion-item:hover::before, .accordion-item.active::before {
+  opacity: 0.8;
   transform: scale(1.05);
 }
-#sidebar-toggle:active {
-  transform: scale(0.95);
+
+.accordion-content {
+  position: relative;
+  z-index: 1;
 }
 
-/* Shift toggle when sidebar is open (desktop) */
-#sidebar.open ~ #sidebar-toggle {
-  left: calc(var(--sidebar-w) + var(--sp-md));
+.accordion-title {
+  font-size: 1.5rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  margin-bottom: 8px;
+  white-space: nowrap;
 }
 
-
-/* -------------------------------------------
-   11. Responsive
-   ------------------------------------------- */
-@media (max-width: 767px) {
-  :root {
-    --sidebar-w: 100%;
-  }
-
-  #sidebar.open ~ #sidebar-toggle {
-    left: auto;
-    right: var(--sp-md);
-    /* On mobile, put toggle on right so user can close */
-  }
-
-  .popup-panel {
-    max-width: 100%;
-    width: 94%;
-    max-height: 60vh;
-    border-radius: var(--r-md);
-  }
-
-  #info-bar {
-    padding: 0 var(--sp-md);
-  }
-
-  .pnlm-controls-container {
-    bottom: calc(var(--infobar-h) + 8px) !important;
-    right: 8px !important;
-  }
+.accordion-meta {
+  font-size: 0.9rem;
+  color: rgba(255,255,255,0.7);
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.4s var(--ease-expo), transform 0.4s var(--ease-expo);
+  transition-delay: 0s;
 }
 
-@media (min-width: 768px) and (max-width: 1024px) {
-  :root {
-    --sidebar-w: 280px;
+.accordion-item:hover .accordion-meta, .accordion-item.active .accordion-meta {
+  opacity: 1;
+  transform: translateY(0);
+  transition-delay: 0.3s;
+}
+
+/* ── Footer ── */
+.footer {
+  padding: 120px var(--padding-page) 60px;
+  display: flex;
+  flex-direction: column;
+  gap: 120px;
+}
+
+.footer-title {
+  font-size: 1.2rem;
+  color: var(--c-text-muted);
+  font-weight: 400;
+  margin-bottom: 24px;
+}
+
+.huge-social-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: var(--c-text);
+  text-decoration: none;
+  letter-spacing: 0;
+  padding: 10px 20px;
+  border-radius: 30px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: background 0.3s var(--ease-expo), border-color 0.3s var(--ease-expo);
+  cursor: none;
+}
+
+.huge-social-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.huge-social-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  padding-top: 32px;
+  color: var(--c-text-muted);
+  font-size: 0.9rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .accordion-container {
+    flex-direction: column;
+    height: 600px;
   }
-}
-
-
-/* -------------------------------------------
-   12. Animations
-   ------------------------------------------- */
-@keyframes spin {
-  to { transform: rotate(360deg); }
-}
-
-@keyframes fadeSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(16px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes hotspotPulse {
-  0%, 100% {
-    box-shadow:
-      0 0 0 5px var(--c-accent-glow),
-      var(--shadow-md);
-  }
-  50% {
-    box-shadow:
-      0 0 0 10px rgba(200, 150, 62, 0.08),
-      var(--shadow-md);
-  }
-}
-
-@keyframes dotPulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.4; }
-}
-
-/* Hide Pannellum's default white grid loader */
-.pnlm-load-box, .pnlm-lbox {
-  display: none !important;
-}
-.pnlm-container {
-  background: var(--c-bg) !important;
+  .cursor { display: none; } /* Disable custom cursor on mobile */
+  body { cursor: auto; }
+  a, button { cursor: pointer; }
 }
