@@ -540,4 +540,14 @@ a, button {
   .cursor { display: none; } /* Disable custom cursor on mobile */
   body { cursor: auto; }
   a, button { cursor: pointer; }
+
+  /* Gallery mobile adjustments */
+  .gallery-glass-caption {
+    padding: 6px 16px;
+    border-radius: 8px;
+  }
+  .gallery-description {
+    font-size: 0.6rem;
+    letter-spacing: 0.08em;
+  }
 }
