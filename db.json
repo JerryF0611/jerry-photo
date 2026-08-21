@@ -86,10 +86,10 @@
       "title": "Mis Fotografías",
       "type": "gallery",
       "images": [
-        { "src": "ValQuirico.jpg", "caption": "Val'Quirico, Tlaxcala" },
-        { "src": "costas-pacifico.jpg", "caption": "Costas Del Pacífico" },
-        { "src": "aves-nayarit.jpg", "caption": "Aves de Nayarit" },
-        { "src": "gigantes-pacifico.jpg", "caption": "Gigantes del Pacífico" }
+        { "src": "ValQuirico.jpg", "caption": "Val'Quirico, Tlaxcala", "category": "places" },
+        { "src": "costas-pacifico.jpg", "caption": "Costas Del Pacífico", "category": "fauna" },
+        { "src": "aves-nayarit.jpg", "caption": "Aves de Nayarit", "category": "fauna" },
+        { "src": "gigantes-pacifico.jpg", "caption": "Gigantes del Pacífico", "category": "fauna" }
       ]
     }
   ],

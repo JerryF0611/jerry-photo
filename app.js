@@ -31,6 +31,7 @@
   let viewer = null;
   let projectData = null;
   let currentGalleryImages = [];
+  let allGalleryImages = [];
   let currentGalleryIndex = 0;
 
   // ── 1. Data Loading ─────────────────────────
@@ -190,9 +191,28 @@
       scenes: scenes
     });
 
+    const selectBtns = document.querySelectorAll('.pano-select-btn');
+    selectBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const sceneId = btn.dataset.scene;
+        if (viewer) {
+          viewer.loadScene(sceneId);
+          selectBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+        }
+      });
+    });
+
     viewer.on('scenechange', (sceneId) => {
       const scene = data.scenes.find(s => s._id === sceneId);
       if (scene) els.currentSceneName.textContent = scene.title;
+      selectBtns.forEach(b => {
+        if (b.dataset.scene === sceneId) {
+          b.classList.add('active');
+        } else {
+          b.classList.remove('active');
+        }
+      });
     });
 
     const initialScene = data.scenes.find(s => s._id === firstSceneId);
@@ -205,9 +225,8 @@
 
   // ── 6. Gallery Modal Logic ────────────────
   function openGallery(images) {
-    currentGalleryImages = images;
-    currentGalleryIndex = 0;
-    updateGalleryView();
+    allGalleryImages = images;
+    filterGallery('all', true);
     els.galleryModal.classList.remove('hidden');
     document.body.style.overflow = 'hidden';
   }
@@ -217,7 +236,44 @@
     document.body.style.overflow = '';
   }
 
+  function filterGallery(filter, immediate = false) {
+    const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+    filterBtns.forEach(b => {
+      if (b.dataset.filter === filter) {
+        b.classList.add('active');
+      } else {
+        b.classList.remove('active');
+      }
+    });
+
+    if (filter === 'all') {
+      currentGalleryImages = allGalleryImages;
+    } else {
+      currentGalleryImages = allGalleryImages.filter(img => img.category === filter);
+    }
+    currentGalleryIndex = 0;
+
+    if (immediate) {
+      const item = currentGalleryImages[currentGalleryIndex];
+      if (item) {
+        const imgSrc = typeof item === 'string' ? item : item.src;
+        const caption = typeof item === 'string' ? '' : (item.caption || '');
+        const descEl = document.getElementById('gallery-description');
+        
+        els.galleryImg.src = imgSrc;
+        els.galleryCounter.textContent = `1 / ${currentGalleryImages.length}`;
+        if (descEl) descEl.textContent = caption;
+        
+        els.galleryPrev.style.display = currentGalleryImages.length > 1 ? 'flex' : 'none';
+        els.galleryNext.style.display = currentGalleryImages.length > 1 ? 'flex' : 'none';
+      }
+    } else {
+      updateGalleryView();
+    }
+  }
+
   function navigateGallery(direction) {
+    if (currentGalleryImages.length === 0) return;
     currentGalleryIndex += direction;
     if (currentGalleryIndex < 0) currentGalleryIndex = currentGalleryImages.length - 1;
     if (currentGalleryIndex >= currentGalleryImages.length) currentGalleryIndex = 0;
@@ -225,6 +281,7 @@
   }
 
   function updateGalleryView() {
+    if (currentGalleryImages.length === 0) return;
     const item = currentGalleryImages[currentGalleryIndex];
     const imgSrc = typeof item === 'string' ? item : item.src;
     const caption = typeof item === 'string' ? '' : (item.caption || '');
@@ -253,6 +310,15 @@
     els.galleryNext.addEventListener('click', () => navigateGallery(1));
     els.galleryModal.querySelector('.gallery-overlay').addEventListener('click', closeGallery);
     
+    // Register Filter buttons
+    const filterBtns = document.querySelectorAll('.gallery-filter-btn');
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        filterGallery(filter);
+      });
+    });
+
     document.addEventListener('keydown', (e) => {
       if (!els.galleryModal.classList.contains('hidden')) {
         if (e.key === 'Escape') closeGallery();
@@ -284,44 +350,60 @@
   function buildAccordion(data) {
     els.sceneList.innerHTML = '';
     
-    data.scenes.forEach((scene, i) => {
-      let bgUrl = '';
-      let metaText = '';
-
-      if (scene.type === 'gallery') {
-        const firstImg = scene.images && scene.images.length ? scene.images[0] : '';
-        bgUrl = typeof firstImg === 'string' ? firstImg : firstImg.src;
-        metaText = 'Ver Galería';
-      } else {
-        bgUrl = PANO_MAP[scene._id];
-        metaText = 'Explorar en 360°';
-        if (!bgUrl) return; // Skip if no mapping
-      }
-
-      const btn = document.createElement('button');
-      // Gallery card won't be active by default since viewer handles 360s
-      btn.className = (i === 0 && scene.type !== 'gallery') ? 'accordion-item active' : 'accordion-item';
-      
-      btn.style.setProperty('--bg-image', `url('${bgUrl}')`);
-
-      btn.innerHTML = `
-        <div class="accordion-content">
-          <h3 class="accordion-title">${scene.title}</h3>
-          <span class="accordion-meta">${metaText}</span>
-        </div>
-      `;
-
-      btn.addEventListener('click', () => {
-        if (scene.type === 'gallery') {
-          openGallery(scene.images);
-        } else {
-          document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
-          btn.classList.add('active');
-          if(viewer) viewer.loadScene(scene._id);
+    const panoScenes = data.scenes.filter(s => s.type === '360');
+    const galleryScenes = data.scenes.filter(s => s.type === 'gallery');
+    
+    const items = [];
+    
+    if (panoScenes.length > 0) {
+      const firstPano = panoScenes[0];
+      const bgUrl = PANO_MAP[firstPano._id];
+      items.push({
+        title: 'Recorridos 360°',
+        meta: 'Explorar en 360°',
+        bgUrl: bgUrl,
+        activeByDefault: true,
+        onClick: () => {
           document.getElementById('showcase').scrollIntoView({ behavior: 'smooth' });
+          if (viewer && viewer.getScene() !== firstPano._id) {
+            viewer.loadScene(firstPano._id);
+          }
         }
       });
+    }
+    
+    galleryScenes.forEach(scene => {
+      const firstImg = scene.images && scene.images.length ? scene.images[0] : '';
+      const bgUrl = typeof firstImg === 'string' ? firstImg : firstImg.src;
+      items.push({
+        title: scene.title,
+        meta: 'Ver Galería',
+        bgUrl: bgUrl,
+        activeByDefault: false,
+        onClick: () => {
+          openGallery(scene.images);
+        }
+      });
+    });
 
+    items.forEach((item, i) => {
+      const btn = document.createElement('button');
+      btn.className = item.activeByDefault ? 'accordion-item active' : 'accordion-item';
+      btn.style.setProperty('--bg-image', `url('${item.bgUrl}')`);
+      
+      btn.innerHTML = `
+        <div class="accordion-content">
+          <h3 class="accordion-title">${item.title}</h3>
+          <span class="accordion-meta">${item.meta}</span>
+        </div>
+      `;
+      
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+        item.onClick();
+      });
+      
       els.sceneList.appendChild(btn);
     });
   }

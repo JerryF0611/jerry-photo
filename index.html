@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css">
   
   <!-- App Styles -->
-  <link rel="stylesheet" href="index.css?v=6">
+  <link rel="stylesheet" href="index.css?v=10">
 </head>
 <body class="loading">
 
@@ -34,7 +34,7 @@
     <div class="nav-brand">JERRYPHOTO</div>
     <div class="nav-links">
       <a href="#projects" class="magnetic-btn" data-strength="20">Galería</a>
-      <a href="mailto:contacto@jerryphoto.com" class="magnetic-btn primary-btn" data-strength="40">Contacto</a>
+      <a href="https://wa.me/525611880961" target="_blank" rel="noopener noreferrer" class="magnetic-btn primary-btn" data-strength="40">Contacto</a>
     </div>
   </nav>
 
@@ -69,6 +69,11 @@
             <!-- Overlay that disappears when interacting -->
             <div class="panorama-overlay">
               <span class="drag-text">Arrastra para explorar</span>
+            </div>
+            <!-- Floating Scene Selector -->
+            <div class="panorama-selector-floating">
+              <button class="pano-select-btn active" data-scene="scene_ahuacatlan">Ahuacatlán</button>
+              <button class="pano-select-btn" data-scene="scene_barranca_de_oro">Amatlán de Cañas</button>
             </div>
           </div>
         </div>
@@ -119,6 +124,14 @@
   <!-- LIGHTBOX GALLERY MODAL -->
   <div id="gallery-modal" class="gallery-modal hidden">
     <div class="gallery-overlay"></div>
+    
+    <!-- Gallery Filter Tabs -->
+    <div class="gallery-filter-bar">
+      <button class="gallery-filter-btn active" data-filter="all">Todos</button>
+      <button class="gallery-filter-btn" data-filter="places">Lugares</button>
+      <button class="gallery-filter-btn" data-filter="fauna">Fauna</button>
+    </div>
+
     <button id="gallery-close" class="gallery-btn gallery-close magnetic-btn" data-strength="20">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <line x1="18" y1="6" x2="6" y2="18"></line>
@@ -155,6 +168,6 @@
   <!-- Pannellum -->
   <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
   <!-- App Logic -->
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=10"></script>
 </body>
 </html>

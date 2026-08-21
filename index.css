@@ -54,6 +54,48 @@
   -webkit-backdrop-filter: blur(10px);
 }
 
+/* Gallery Filter Tabs */
+.gallery-filter-bar {
+  position: absolute;
+  top: 32px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 6px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 1005;
+  transition: opacity 0.3s;
+}
+
+.gallery-filter-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px 24px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-expo);
+  font-family: var(--font-main);
+  white-space: nowrap;
+}
+
+.gallery-filter-btn:hover {
+  color: #fff;
+}
+
+.gallery-filter-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .gallery-content {
   position: relative;
   z-index: 1001;
@@ -389,6 +431,47 @@ a, button {
   opacity: 0;
 }
 
+/* Floating Scene Selector */
+.panorama-selector-floating {
+  position: absolute;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(20px) saturate(180%);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  padding: 6px;
+  border-radius: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  z-index: 10;
+  transition: opacity 0.3s;
+}
+
+.pano-select-btn {
+  background: transparent;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  padding: 8px 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease-expo);
+  white-space: nowrap;
+}
+
+.pano-select-btn:hover {
+  color: #fff;
+}
+
+.pano-select-btn.active {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 .drag-text {
   font-size: 1.2rem;
   font-weight: 500;
@@ -569,5 +652,23 @@ a, button {
   .gallery-close {
     top: 20px;
     right: 20px;
+  }
+  .panorama-selector-floating {
+    top: 12px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .pano-select-btn {
+    padding: 6px 12px;
+    font-size: 0.75rem;
+  }
+  .gallery-filter-bar {
+    top: 76px;
+    padding: 4px;
+    gap: 4px;
+  }
+  .gallery-filter-btn {
+    padding: 6px 14px;
+    font-size: 0.75rem;
   }
 }
