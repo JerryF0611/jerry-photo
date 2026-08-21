@@ -260,6 +260,24 @@
         if (e.key === 'ArrowRight') navigateGallery(1);
       }
     });
+
+    // Touch Swipe Gestures for Mobile
+    let touchstartX = 0;
+    let touchendX = 0;
+
+    els.galleryModal.addEventListener('touchstart', (e) => {
+      touchstartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    els.galleryModal.addEventListener('touchend', (e) => {
+      touchendX = e.changedTouches[0].screenX;
+      if (touchendX < touchstartX - 50) {
+        navigateGallery(1); // Swipe left -> next
+      }
+      if (touchendX > touchstartX + 50) {
+        navigateGallery(-1); // Swipe right -> prev
+      }
+    }, { passive: true });
   }
 
   // ── 7. Build Accordion Cards ──────────────

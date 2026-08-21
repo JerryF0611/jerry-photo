@@ -550,4 +550,24 @@ a, button {
     font-size: 0.6rem;
     letter-spacing: 0.08em;
   }
+  .gallery-btn {
+    width: 40px;
+    height: 40px;
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+  }
+  .gallery-btn svg {
+    width: 18px;
+    height: 18px;
+  }
+  .gallery-nav.prev {
+    left: 12px;
+  }
+  .gallery-nav.next {
+    right: 12px;
+  }
+  .gallery-close {
+    top: 20px;
+    right: 20px;
+  }
 }
