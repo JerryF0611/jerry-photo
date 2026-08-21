@@ -68,7 +68,8 @@
       },
       "project_id": "6a7e37fcdd92c6223e30ef71",
       "pano_type": "normal",
-      "hotspots": []
+      "hotspots": [],
+      "type": "360"
     },
     {
       "_id": "scene_barranca_de_oro",
@@ -77,7 +78,19 @@
         "hlookat": 0,
         "vlookat": 0,
         "fov": 90
-      }
+      },
+      "type": "360"
+    },
+    {
+      "_id": "scene_mis_fotografias",
+      "title": "Mis Fotografías",
+      "type": "gallery",
+      "images": [
+        { "src": "ValQuirico.jpg", "caption": "Val'Quirico, Tlaxcala" },
+        { "src": "costas-pacifico.jpg", "caption": "Costas Del Pacífico" },
+        { "src": "aves-nayarit.jpg", "caption": "Aves de Nayarit" },
+        { "src": "gigantes-pacifico.jpg", "caption": "Gigantes del Pacífico" }
+      ]
     }
   ],
   "groups": []

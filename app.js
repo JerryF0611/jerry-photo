@@ -18,11 +18,20 @@
     panoramaOverlay: document.querySelector('.panorama-overlay'),
     sceneList: document.getElementById('scene-list'),
     currentSceneName: document.getElementById('current-scene-name'),
-    cursor: document.querySelector('.cursor')
+    cursor: document.querySelector('.cursor'),
+    // Gallery Els
+    galleryModal: document.getElementById('gallery-modal'),
+    galleryImg: document.getElementById('gallery-img'),
+    galleryClose: document.getElementById('gallery-close'),
+    galleryPrev: document.getElementById('gallery-prev'),
+    galleryNext: document.getElementById('gallery-next'),
+    galleryCounter: document.getElementById('gallery-counter')
   };
 
   let viewer = null;
   let projectData = null;
+  let currentGalleryImages = [];
+  let currentGalleryIndex = 0;
 
   // ── 1. Data Loading ─────────────────────────
   async function loadConfig() {
@@ -56,7 +65,6 @@
     }
     requestAnimationFrame(raf);
 
-    // Integrate GSAP with Lenis
     if (window.ScrollTrigger) {
       lenis.on('scroll', ScrollTrigger.update);
       gsap.ticker.add((time)=>{
@@ -68,7 +76,6 @@
 
   // ── 3. Initialize GSAP Animations ─────────
   function initAnimations() {
-    // Intro Loader Animation
     gsap.to(els.loaderProgress, { width: '100%', duration: 0.8, ease: 'power2.inOut' });
     gsap.to('.loader-title', { opacity: 1, y: 0, duration: 0.6, delay: 0.2, ease: 'power3.out' });
     
@@ -84,7 +91,6 @@
       }
     });
 
-    // Showcase ScrollTrigger
     gsap.to(els.panoramaWrapper, {
       scrollTrigger: {
         trigger: '.showcase-section',
@@ -111,7 +117,7 @@
 
   // ── 4. Initialize Custom Cursor & Magnet ──
   function initCursor() {
-    if (window.innerWidth < 768) return; // Disable on mobile
+    if (window.innerWidth < 768) return;
 
     document.addEventListener('mousemove', (e) => {
       gsap.to(els.cursor, {
@@ -122,7 +128,6 @@
       });
     });
 
-    // Magnetic buttons
     const magneticBtns = document.querySelectorAll('.magnetic-btn');
     magneticBtns.forEach(btn => {
       btn.addEventListener('mousemove', (e) => {
@@ -141,7 +146,6 @@
       });
     });
 
-    // Interactive regions
     const interactiveEls = document.querySelectorAll('.accordion-item, .panorama-container');
     interactiveEls.forEach(el => {
       el.addEventListener('mouseenter', () => els.cursor.classList.add('active'));
@@ -155,6 +159,7 @@
     let firstSceneId = null;
 
     data.scenes.forEach(scene => {
+      if (scene.type === 'gallery') return; // Skip gallery from pannellum
       const panoramaFile = PANO_MAP[scene._id];
       if (!panoramaFile) return;
 
@@ -172,6 +177,8 @@
       };
     });
 
+    if(!firstSceneId) return; // No 360 scenes
+
     viewer = pannellum.viewer('panorama', {
       default: {
         firstScene: firstSceneId,
@@ -183,54 +190,118 @@
       scenes: scenes
     });
 
-    // Update scene name on change
     viewer.on('scenechange', (sceneId) => {
       const scene = data.scenes.find(s => s._id === sceneId);
       if (scene) els.currentSceneName.textContent = scene.title;
     });
 
-    // Initial scene name
     const initialScene = data.scenes.find(s => s._id === firstSceneId);
     if (initialScene) els.currentSceneName.textContent = initialScene.title;
 
-    // Remove overlay on interaction
     els.panoramaWrapper.addEventListener('mousedown', () => {
       els.panoramaOverlay.classList.add('hidden');
     });
   }
 
-  // ── 6. Build Accordion Cards ──────────────
+  // ── 6. Gallery Modal Logic ────────────────
+  function openGallery(images) {
+    currentGalleryImages = images;
+    currentGalleryIndex = 0;
+    updateGalleryView();
+    els.galleryModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeGallery() {
+    els.galleryModal.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  function navigateGallery(direction) {
+    currentGalleryIndex += direction;
+    if (currentGalleryIndex < 0) currentGalleryIndex = currentGalleryImages.length - 1;
+    if (currentGalleryIndex >= currentGalleryImages.length) currentGalleryIndex = 0;
+    updateGalleryView();
+  }
+
+  function updateGalleryView() {
+    const item = currentGalleryImages[currentGalleryIndex];
+    const imgSrc = typeof item === 'string' ? item : item.src;
+    const caption = typeof item === 'string' ? '' : (item.caption || '');
+    const descEl = document.getElementById('gallery-description');
+
+    gsap.to(els.galleryImg, { opacity: 0, duration: 0.15, onComplete: () => {
+      els.galleryImg.src = imgSrc;
+      els.galleryCounter.textContent = `${currentGalleryIndex + 1} / ${currentGalleryImages.length}`;
+      
+      // Update description
+      if (descEl) {
+        descEl.textContent = caption;
+      }
+
+      // Hide arrows if only 1 image
+      els.galleryPrev.style.display = currentGalleryImages.length > 1 ? 'flex' : 'none';
+      els.galleryNext.style.display = currentGalleryImages.length > 1 ? 'flex' : 'none';
+      
+      gsap.to(els.galleryImg, { opacity: 1, duration: 0.15 });
+    }});
+  }
+
+  function initGalleryEvents() {
+    els.galleryClose.addEventListener('click', closeGallery);
+    els.galleryPrev.addEventListener('click', () => navigateGallery(-1));
+    els.galleryNext.addEventListener('click', () => navigateGallery(1));
+    els.galleryModal.querySelector('.gallery-overlay').addEventListener('click', closeGallery);
+    
+    document.addEventListener('keydown', (e) => {
+      if (!els.galleryModal.classList.contains('hidden')) {
+        if (e.key === 'Escape') closeGallery();
+        if (e.key === 'ArrowLeft') navigateGallery(-1);
+        if (e.key === 'ArrowRight') navigateGallery(1);
+      }
+    });
+  }
+
+  // ── 7. Build Accordion Cards ──────────────
   function buildAccordion(data) {
     els.sceneList.innerHTML = '';
     
     data.scenes.forEach((scene, i) => {
-      if (!PANO_MAP[scene._id]) return;
+      let bgUrl = '';
+      let metaText = '';
+
+      if (scene.type === 'gallery') {
+        const firstImg = scene.images && scene.images.length ? scene.images[0] : '';
+        bgUrl = typeof firstImg === 'string' ? firstImg : firstImg.src;
+        metaText = 'Ver Galería';
+      } else {
+        bgUrl = PANO_MAP[scene._id];
+        metaText = 'Explorar en 360°';
+        if (!bgUrl) return; // Skip if no mapping
+      }
 
       const btn = document.createElement('button');
-      btn.className = i === 0 ? 'accordion-item active' : 'accordion-item';
+      // Gallery card won't be active by default since viewer handles 360s
+      btn.className = (i === 0 && scene.type !== 'gallery') ? 'accordion-item active' : 'accordion-item';
       
-      // Inline style for background image
-      const bgUrl = PANO_MAP[scene._id];
       btn.style.setProperty('--bg-image', `url('${bgUrl}')`);
 
       btn.innerHTML = `
         <div class="accordion-content">
           <h3 class="accordion-title">${scene.title}</h3>
-          <span class="accordion-meta">Explorar en 360°</span>
+          <span class="accordion-meta">${metaText}</span>
         </div>
       `;
 
       btn.addEventListener('click', () => {
-        // Remove active class from all
-        document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
-        btn.classList.add('active');
-        
-        // Load scene in viewer
-        if(viewer) viewer.loadScene(scene._id);
-        
-        // Smooth scroll back to showcase
-        const lenis = window.Lenis; // Wait, we didn't export lenis globally. Let's just use native scroll or GSAP
-        document.getElementById('showcase').scrollIntoView({ behavior: 'smooth' });
+        if (scene.type === 'gallery') {
+          openGallery(scene.images);
+        } else {
+          document.querySelectorAll('.accordion-item').forEach(el => el.classList.remove('active'));
+          btn.classList.add('active');
+          if(viewer) viewer.loadScene(scene._id);
+          document.getElementById('showcase').scrollIntoView({ behavior: 'smooth' });
+        }
       });
 
       els.sceneList.appendChild(btn);
@@ -241,6 +312,7 @@
   async function init() {
     initLenis();
     initCursor();
+    initGalleryEvents();
     
     projectData = await loadConfig();
     if (projectData) {
