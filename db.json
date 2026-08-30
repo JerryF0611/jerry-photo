@@ -99,7 +99,12 @@
         { "src": "ValQuirico.jpg", "caption": "Val'Quirico, Tlaxcala", "category": "places" },
         { "src": "costas-pacifico.jpg", "caption": "Costas Del Pacífico", "category": "fauna" },
         { "src": "aves-nayarit.jpg", "caption": "Aves de Nayarit", "category": "fauna" },
-        { "src": "gigantes-pacifico.jpg", "caption": "Gigantes del Pacífico", "category": "fauna" }
+        { "src": "gigantes-pacifico.jpg", "caption": "Gigantes del Pacífico", "category": "fauna" },
+        { "src": "perrito.jpg", "caption": "Compañero de Ruta", "category": "fauna" },
+        { "src": "danzante.jpg", "caption": "Danza y Tradición", "category": "culture" },
+        { "src": "templo.jpg", "caption": "Altar Mayor, Amatlán", "category": "culture" },
+        { "src": "reflejo.jpg", "caption": "Reflejos de Fe", "category": "culture" },
+        { "src": "novedades.jpg", "caption": "Vida Local, Novedades Flor", "category": "culture" }
       ]
     }
   ],
