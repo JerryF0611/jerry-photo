@@ -409,18 +409,29 @@
     });
   }
 
-  // ── Preload gallery images in background ────
-  function preloadGalleryImages(data) {
-    const galleryScene = data.scenes.find(s => s.type === 'gallery');
-    if (!galleryScene || !galleryScene.images) return;
-    
-    // Preload images one by one with a small delay to not block the main thread
-    galleryScene.images.forEach((item, i) => {
-      setTimeout(() => {
-        const img = new Image();
-        img.src = typeof item === 'string' ? item : item.src;
-      }, i * 200); // Stagger loads every 200ms
+  // ── Preload all assets in background ────────
+  function preloadAssets(data) {
+    // 1. Preload 360 panoramas so scene changes are instant!
+    data.scenes.forEach(scene => {
+      if (scene.type === '360') {
+        const panoramaFile = PANO_MAP[scene._id];
+        if (panoramaFile) {
+          const img = new Image();
+          img.src = panoramaFile;
+        }
+      }
     });
+
+    // 2. Preload gallery images with a small delay
+    const galleryScene = data.scenes.find(s => s.type === 'gallery');
+    if (galleryScene && galleryScene.images) {
+      galleryScene.images.forEach((item, i) => {
+        setTimeout(() => {
+          const img = new Image();
+          img.src = typeof item === 'string' ? item : item.src;
+        }, (i + 1) * 300); // Stagger loads every 300ms
+      });
+    }
   }
 
   // ── Main Init ──────────────────────────────
@@ -433,8 +444,8 @@
     if (projectData) {
       buildAccordion(projectData);
       initViewer(projectData);
-      // Preload gallery images after viewer is ready
-      setTimeout(() => preloadGalleryImages(projectData), 2000);
+      // Preload all assets after viewer is ready
+      setTimeout(() => preloadAssets(projectData), 1500);
     } else {
       els.currentSceneName.textContent = 'Error cargando datos';
     }
