@@ -106,7 +106,11 @@
         { "src": "reflejo.jpg", "caption": "Reflejos de Fe", "category": "culture" },
         { "src": "novedades.jpg", "caption": "Vida Local, Novedades Flor", "category": "culture" },
         { "src": "torre.jpg", "caption": "Iglesia Amatlán de Cañas", "category": "places" },
-        { "src": "fachada.jpg", "caption": "Templo Histórico, Ahuacatlán", "category": "places" }
+        { "src": "fachada.jpg", "caption": "Templo Histórico, Ahuacatlán", "category": "places" },
+        { "src": "nube.jpg", "caption": "Silueta en el Ocaso", "category": "places" },
+        { "src": "garzas.jpg", "caption": "Garzas en Reposo", "category": "fauna" },
+        { "src": "playeros.jpg", "caption": "Aves Playeras", "category": "fauna" },
+        { "src": "carpintero.jpg", "caption": "Pájaro Carpintero", "category": "fauna" }
       ]
     }
   ],
