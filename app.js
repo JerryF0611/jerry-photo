@@ -409,6 +409,20 @@
     });
   }
 
+  // ── Preload gallery images in background ────
+  function preloadGalleryImages(data) {
+    const galleryScene = data.scenes.find(s => s.type === 'gallery');
+    if (!galleryScene || !galleryScene.images) return;
+    
+    // Preload images one by one with a small delay to not block the main thread
+    galleryScene.images.forEach((item, i) => {
+      setTimeout(() => {
+        const img = new Image();
+        img.src = typeof item === 'string' ? item : item.src;
+      }, i * 200); // Stagger loads every 200ms
+    });
+  }
+
   // ── Main Init ──────────────────────────────
   async function init() {
     initLenis();
@@ -419,6 +433,8 @@
     if (projectData) {
       buildAccordion(projectData);
       initViewer(projectData);
+      // Preload gallery images after viewer is ready
+      setTimeout(() => preloadGalleryImages(projectData), 2000);
     } else {
       els.currentSceneName.textContent = 'Error cargando datos';
     }
