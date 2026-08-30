@@ -105,7 +105,7 @@
         { "src": "templo.jpg", "caption": "Altar Mayor, Amatlán", "category": "culture" },
         { "src": "reflejo.jpg", "caption": "Reflejos de Fe", "category": "culture" },
         { "src": "novedades.jpg", "caption": "Vida Local, Novedades Flor", "category": "culture" },
-        { "src": "torre.jpg", "caption": "Legado de Ladrillo", "category": "places" },
+        { "src": "torre.jpg", "caption": "Iglesia Amatlán de Cañas", "category": "places" },
         { "src": "fachada.jpg", "caption": "Templo Histórico, Ahuacatlán", "category": "places" }
       ]
     }
