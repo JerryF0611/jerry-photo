@@ -110,7 +110,8 @@
         { "src": "nube.jpg", "caption": "Silueta en el Ocaso", "category": "places" },
         { "src": "garzas.jpg", "caption": "Garzas en Reposo", "category": "fauna" },
         { "src": "playeros.jpg", "caption": "Aves Playeras", "category": "fauna" },
-        { "src": "carpintero.jpg", "caption": "Pájaro Carpintero", "category": "fauna" }
+        { "src": "carpintero.jpg", "caption": "Pájaro Carpintero", "category": "fauna" },
+        { "src": "guadalupana.jpg", "caption": "Devoción Guadalupana", "category": "culture" }
       ]
     }
   ],
