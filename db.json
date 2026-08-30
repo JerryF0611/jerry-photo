@@ -82,6 +82,16 @@
       "type": "360"
     },
     {
+      "_id": "scene_barranca_oro_nuevo",
+      "title": "Barranca del Oro",
+      "default_view": {
+        "hlookat": 0,
+        "vlookat": 0,
+        "fov": 90
+      },
+      "type": "360"
+    },
+    {
       "_id": "scene_mis_fotografias",
       "title": "Mis Fotografías",
       "type": "gallery",

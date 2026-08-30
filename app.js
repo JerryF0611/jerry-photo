@@ -8,7 +8,8 @@
   // ── Configuration ──────────────────────────
   const PANO_MAP = {
     'scene_ahuacatlan': 'ahuacatlan.jpg',
-    'scene_barranca_de_oro': 'barranca-de-oro.jpg'
+    'scene_barranca_de_oro': 'barranca-de-oro.jpg',
+    'scene_barranca_oro_nuevo': 'barranca-oro-nueva.jpg'
   };
 
   const els = {
