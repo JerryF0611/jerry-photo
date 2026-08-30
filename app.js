@@ -9,7 +9,7 @@
   const PANO_MAP = {
     'scene_ahuacatlan': 'ahuacatlan.jpg',
     'scene_barranca_de_oro': 'barranca-de-oro.jpg',
-    'scene_barranca_oro_nuevo': 'oro.png'
+    'scene_barranca_oro_nuevo': 'oro.jpg'
   };
 
   const els = {
