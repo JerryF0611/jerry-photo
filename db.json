@@ -111,7 +111,8 @@
         { "src": "garzas.jpg", "caption": "Garzas en Reposo", "category": "fauna" },
         { "src": "playeros.jpg", "caption": "Aves Playeras", "category": "fauna" },
         { "src": "carpintero.jpg", "caption": "Pájaro Carpintero", "category": "fauna" },
-        { "src": "guadalupana.jpg", "caption": "Devoción Guadalupana", "category": "culture" }
+        { "src": "guadalupana.jpg", "caption": "Devoción Guadalupana", "category": "culture" },
+        { "src": "torre-latino.jpg", "caption": "Torre Latinoamericana", "category": "places" }
       ]
     }
   ],
