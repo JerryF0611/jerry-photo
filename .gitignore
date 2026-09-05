@@ -1,0 +1,31 @@
+# OS files
+.DS_Store
+
+# Original high-res source files (not needed for web)
+*.PNG
+*.JPG
+*.ARW
+*.png
+!favicon.png
+
+# Unoptimized originals
+san sebastian.JPG
+Catedral de puebla.PNG
+torre latino.png
+Barranca-oro.JPG
+virgen.jpg
+oro.png
+ahua 2.JPG
+mejorada.PNG
+cascada del manto.png
+pajaros st.png
+st regis.png
+sunset.png
+pajaro loco.jpg
+Ballenas.PNG
+Natu.jpg
+Taller.jpg
+carousel2.jpg
+8749DFD8-C9A8-4E35-A3DF-054D9C519EDA.jpg
+DSC01249.jpg
+_DSC*.jpg
