@@ -92,6 +92,16 @@
       "type": "360"
     },
     {
+      "_id": "scene_san_sebastian",
+      "title": "San Sebastián del Oeste",
+      "default_view": {
+        "hlookat": 0,
+        "vlookat": -10,
+        "fov": 90
+      },
+      "type": "360"
+    },
+    {
       "_id": "scene_mis_fotografias",
       "title": "Mis Fotografías",
       "type": "gallery",
